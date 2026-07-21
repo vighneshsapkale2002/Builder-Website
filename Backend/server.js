@@ -4,10 +4,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
-
-
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
@@ -71,6 +69,26 @@ app.post("/api/enquiries", async (req, res) => {
 
     await transporter.sendMail(builderMail);
 
+    await transporter.sendMail({
+      from: `"Trust Builders" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Thank you for your enquiry",
+      html: `
+    <h2>Hello ${name},</h2>
+
+    <p>Thank you for contacting Trust Builders.</p>
+
+    <p>We have received your enquiry for
+    <b>${project}</b>.</p>
+
+    <p>Our team will contact you soon.</p>
+
+    <br>
+
+    <p>Regards,<br>
+    Trust Builders</p>
+  `,
+    });
 
     // // Send Auto-Reply to Customer
     // const customerMail = {
@@ -88,62 +106,58 @@ app.post("/api/enquiries", async (req, res) => {
     //   `,
     // };
 
-
     // 2️⃣ Auto-Reply to Customer (HTML Template)
 
-// await transporter.sendMail({
-//   from: `"Trust Builders" <${process.env.EMAIL_USER}>`,
-//   to: email, // customer email
-//   subject: "✅ Thank you for your enquiry with Trust Builders",
-//   html: `
-//   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; background-color:#f6f9fc; padding:40px 0;">
-//     <tr>
-//       <td align="center">
-//         <table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-          
-//           <!-- Header -->
-//           <tr>
-//             <td align="center" style="background:#175df1; padding:20px;">
-//               <img src="https://via.placeholder.com/150x50?text=Builder+Logo" alt="Builder Logo" style="max-width:150px;" />
-//             </td>
-//           </tr>
+    // await transporter.sendMail({
+    //   from: `"Trust Builders" <${process.env.EMAIL_USER}>`,
+    //   to: email, // customer email
+    //   subject: "✅ Thank you for your enquiry with Trust Builders",
+    //   html: `
+    //   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; background-color:#f6f9fc; padding:40px 0;">
+    //     <tr>
+    //       <td align="center">
+    //         <table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
 
-//           <!-- Body -->
-//           <tr>
-//             <td style="padding:30px; color:#333; font-size:16px; line-height:1.6;">
-//               <h2 style="color:#175df1; margin-top:0;">Hi ${name},</h2>
-//               <p>Thank you for enquiring about our project <strong>${project}</strong>.</p>
-//               <p>We’ve received your request and our team will reach out to you shortly with more details. Meanwhile, you can explore our website or contact us directly for faster assistance.</p>
-//               <p style="margin:20px 0;">
-//                 <a href="https://yourbuilderwebsite.com" style="background:#f9c253; color:#000; padding:12px 24px; border-radius:6px; text-decoration:none; font-weight:bold;">
-//                   Visit Our Website
-//                 </a>
-//               </p>
-//               <p>If you have any urgent queries, feel free to call us at <strong>+91-9876543210</strong>.</p>
-//               <br/>
-//               <p>Best Regards,<br/><strong>Trust Builders Team</strong></p>
-//             </td>
-//           </tr>
+    //           <!-- Header -->
+    //           <tr>
+    //             <td align="center" style="background:#175df1; padding:20px;">
+    //               <img src="https://via.placeholder.com/150x50?text=Builder+Logo" alt="Builder Logo" style="max-width:150px;" />
+    //             </td>
+    //           </tr>
 
-//           <!-- Footer -->
-//           <tr>
-//             <td align="center" style="background:#f1f5f9; padding:15px; font-size:13px; color:#666;">
-//               © 2025 Trust Builders. All rights reserved.<br/>
-//               <a href="https://yourbuilderwebsite.com/unsubscribe" style="color:#175df1; text-decoration:none;">Unsubscribe</a>
-//             </td>
-//           </tr>
+    //           <!-- Body -->
+    //           <tr>
+    //             <td style="padding:30px; color:#333; font-size:16px; line-height:1.6;">
+    //               <h2 style="color:#175df1; margin-top:0;">Hi ${name},</h2>
+    //               <p>Thank you for enquiring about our project <strong>${project}</strong>.</p>
+    //               <p>We’ve received your request and our team will reach out to you shortly with more details. Meanwhile, you can explore our website or contact us directly for faster assistance.</p>
+    //               <p style="margin:20px 0;">
+    //                 <a href="https://yourbuilderwebsite.com" style="background:#f9c253; color:#000; padding:12px 24px; border-radius:6px; text-decoration:none; font-weight:bold;">
+    //                   Visit Our Website
+    //                 </a>
+    //               </p>
+    //               <p>If you have any urgent queries, feel free to call us at <strong>+91-9876543210</strong>.</p>
+    //               <br/>
+    //               <p>Best Regards,<br/><strong>Trust Builders Team</strong></p>
+    //             </td>
+    //           </tr>
 
-//         </table>
-//       </td>
-//     </tr>
-//   </table>
-//   `,
-// });
+    //           <!-- Footer -->
+    //           <tr>
+    //             <td align="center" style="background:#f1f5f9; padding:15px; font-size:13px; color:#666;">
+    //               © 2025 Trust Builders. All rights reserved.<br/>
+    //               <a href="https://yourbuilderwebsite.com/unsubscribe" style="color:#175df1; text-decoration:none;">Unsubscribe</a>
+    //             </td>
+    //           </tr>
 
+    //         </table>
+    //       </td>
+    //     </tr>
+    //   </table>
+    //   `,
+    // });
 
-
-
-//     await transporter.sendMail(customerMail);
+    //     await transporter.sendMail(customerMail);
 
     res.status(201).json({ message: "Enquiry submitted, emails sent ✅" });
   } catch (err) {
@@ -163,18 +177,16 @@ app.get("/api/enquiries", async (req, res) => {
   }
 });
 
-
-
 // This is new code start login and signup.
 
-
 // MongoDB Connection
-mongoose.connect("mongodb://127.0.0.1:27017/auth_demo", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("✅ MongoDB Connected"))
-.catch((err) => console.log(err));
+mongoose
+  .connect("mongodb://127.0.0.1:27017/auth_demo", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.log(err));
 
 // User Schema
 const userSchema = new mongoose.Schema({
@@ -191,7 +203,8 @@ app.post("/signup", async (req, res) => {
     const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "User already exists" });
+    if (existingUser)
+      return res.status(400).json({ message: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword });
@@ -212,17 +225,21 @@ app.post("/login", async (req, res) => {
     if (!user) return res.status(400).json({ message: "User not found" });
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
+    if (!isPasswordCorrect)
+      return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id }, "secretKey123", { expiresIn: "1h" });
+    const token = jwt.sign({ id: user._id }, "secretKey123", {
+      expiresIn: "1h",
+    });
 
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+    res.json({
+      token,
+      user: { id: user._id, name: user.name, email: user.email },
+    });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
 });
-
-
 
 // Start Server
 const PORT = process.env.PORT || 5000;
